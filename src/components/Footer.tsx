@@ -6,7 +6,7 @@ import { ShieldCheck, Truck, RotateCcw, Heart, Phone, MapPin, Mail, X, ExternalL
 // innercode-v2 was unlinked on 30/10/2026 at the owner's request.
 const PARTNER_SITES = [
   {
-    name: 'INNER CODE – Giai đoạn 1',
+    name: 'INNER CODE', // shown to customers; "giai đoạn 1" is internal only
     tagline: 'Công cụ khám phá bản thân',
     url: 'https://minhle111509.github.io/innercode-giai-doan-1-v2/',
   },
