@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { StoreSettings } from '../types';
-import { ShieldCheck, Truck, RotateCcw, Heart, Phone, MapPin, Mail, X } from 'lucide-react';
+import { ShieldCheck, Truck, RotateCcw, Heart, Phone, MapPin, Mail, X, ExternalLink } from 'lucide-react';
+
+// Linked INNER CODE v2 sites (repos innercode-v2 and innercode-giai-doan-1-v2 link back to this shop)
+const PARTNER_SITES = [
+  { name: 'INNER CODE – Mật Mã Nội Tâm', tagline: 'Thần số học, Bát Tự, Tarot', url: 'https://innercode-v2.pages.dev/' },
+  {
+    name: 'INNER CODE – Giai đoạn 1',
+    tagline: 'Công cụ khám phá bản thân',
+    url: 'https://minhle111509.github.io/innercode-giai-doan-1-v2/',
+  },
+];
 
 interface FooterProps {
   settings: Partial<StoreSettings>;
@@ -80,6 +90,27 @@ Tiệm tuyệt đối không chia sẻ, bán hay cung cấp thông tin của qu�
                 <Mail className="w-4 h-4 text-[#C6A667] shrink-0" />
                 <span>{settings.email || 'lienhe@tiemnhoanyen.vn'}</span>
               </p>
+            </div>
+
+            {/* Sister sites (each links back here). Update both sides if an address changes. */}
+            <div className="pt-3 space-y-2">
+              <h4 className="font-zen text-sm font-bold text-[#C6A667] uppercase tracking-wider">Trang Liên Kết</h4>
+              {PARTNER_SITES.map((site) => (
+                <a
+                  key={site.url}
+                  href={site.url}
+                  target="_blank"
+                  rel="noopener"
+                  className="flex items-center gap-2.5 text-xs text-[#FAF6EE]/85 hover:text-[#C6A667] transition w-fit"
+                >
+                  <img src="/innercode-emblem.webp" alt="" className="w-7 h-7 rounded-full" />
+                  <span>
+                    <span className="font-semibold">{site.name}</span>
+                    <span className="text-[#FAF6EE]/55"> · {site.tagline}</span>
+                  </span>
+                  <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+              ))}
             </div>
           </div>
 
