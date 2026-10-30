@@ -2,6 +2,8 @@
 
 Web bán vật phẩm phong thủy, mặt dây chuyền và nụ trầm hương — "Một chút an yên, gửi đến bạn."
 
+🌐 **Web:** https://tiem-nho-an-yen.minhle111509.workers.dev
+
 **Tính năng:** danh mục & tìm kiếm sản phẩm (gõ không dấu được), giỏ hàng, đặt hàng không cần tài khoản,
 thanh toán COD hoặc chuyển khoản VietQR, gói quà, tra cứu / tự hủy đơn, trang quản trị (đơn hàng, kho,
 sản phẩm, cài đặt, tài khoản nhận tiền), AI Gemini gợi ý thông tin sản phẩm từ ảnh, cài như app (PWA).
