@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { StoreSettings } from '../types';
 import { ShieldCheck, Truck, RotateCcw, Heart, Phone, MapPin, Mail, X, ExternalLink } from 'lucide-react';
 
-// Linked INNER CODE v2 sites (repos innercode-v2 and innercode-giai-doan-1-v2 link back to this shop)
+// Linked sister site (repo innercode-giai-doan-1-v2 links back to this shop).
+// innercode-v2 was unlinked on 30/10/2026 at the owner's request.
 const PARTNER_SITES = [
-  { name: 'INNER CODE – Mật Mã Nội Tâm', tagline: 'Thần số học, Bát Tự, Tarot', url: 'https://innercode-v2.pages.dev/' },
   {
     name: 'INNER CODE – Giai đoạn 1',
     tagline: 'Công cụ khám phá bản thân',
