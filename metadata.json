@@ -1,0 +1,6 @@
+{
+  "name": "Tiệm Nhỏ An Yên",
+  "description": "Cửa hàng vật phẩm phong thủy, trang sức mặt dây chuyền và nụ trầm hương mang phong cách Zen Vintage & Oriental Minimalism.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
