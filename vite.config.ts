@@ -11,7 +11,7 @@ export default defineConfig(() => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['icon.svg'],
+        includeAssets: ['favicon-64.png', 'apple-touch-icon.png', 'logo-192.png', 'momo-qr.jpg'],
         manifest: {
           id: '/',
           name: 'Tiệm Nhỏ An Yên',
@@ -23,18 +23,9 @@ export default defineConfig(() => {
           start_url: '/',
           scope: '/',
           icons: [
-            {
-              src: '/icon.svg',
-              sizes: '192x192 512x512',
-              type: 'image/svg+xml',
-              purpose: 'any',
-            },
-            {
-              src: '/icon.svg',
-              sizes: '512x512',
-              type: 'image/svg+xml',
-              purpose: 'maskable',
-            },
+            { src: '/logo-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+            { src: '/logo-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+            { src: '/logo-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           ],
         },
         devOptions: {

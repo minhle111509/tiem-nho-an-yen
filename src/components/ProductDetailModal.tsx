@@ -63,7 +63,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
           <div className="flex flex-col gap-3">
             <div className="aspect-square w-full rounded-2xl overflow-hidden bg-[#ECE3D4] border border-[#E0D5C3] relative">
               <img
-                src={product.images[selectedImage] || '/icon.svg'}
+                src={product.images[selectedImage] || '/logo-192.png'}
                 alt={product.name}
                 className="w-full h-full object-cover transition-all duration-300"
               />

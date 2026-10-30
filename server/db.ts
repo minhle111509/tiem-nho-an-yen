@@ -264,7 +264,8 @@ class Database {
       (updates.accountNumber !== undefined && updates.accountNumber !== oldSettings.accountNumber) ||
       (updates.accountHolder !== undefined && updates.accountHolder !== oldSettings.accountHolder) ||
       (updates.customQrImage !== undefined && updates.customQrImage !== oldSettings.customQrImage) ||
-      (updates.useDynamicVietQr !== undefined && updates.useDynamicVietQr !== oldSettings.useDynamicVietQr);
+      (updates.useDynamicVietQr !== undefined && updates.useDynamicVietQr !== oldSettings.useDynamicVietQr) ||
+      (updates.momoQrImage !== undefined && updates.momoQrImage !== oldSettings.momoQrImage);
 
     if (isBankingChanged) {
       const historyLog: BankingHistoryLog = {

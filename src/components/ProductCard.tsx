@@ -27,7 +27,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelectProdu
         className="relative w-full aspect-square overflow-hidden bg-[#ECE3D4] cursor-pointer"
       >
         <img
-          src={product.images[0] || '/icon.svg'}
+          src={product.images[0] || '/logo-192.png'}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"

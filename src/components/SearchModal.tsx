@@ -86,7 +86,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white cursor-pointer transition border border-transparent hover:border-[#E2D5C3]"
               >
                 <img
-                  src={p.images[0] || '/icon.svg'}
+                  src={p.images[0] || '/logo-192.png'}
                   alt={p.name}
                   className="w-12 h-12 rounded-lg object-cover bg-[#ECE3D4] shrink-0"
                 />

@@ -42,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-3 text-left focus:outline-none group"
           >
             <div className="w-10 h-10 rounded-full bg-[#FAF6EE] border border-[#C6A667]/40 flex items-center justify-center p-1.5 shadow-sm group-hover:border-[#C6A667] transition">
-              <img src="/icon.svg" alt="Tiệm Nhỏ An Yên" className="w-full h-full object-contain" />
+              <img src="/logo-192.png" alt="Tiệm Nhỏ An Yên" className="w-full h-full object-cover rounded-full" />
             </div>
             <div>
               <div className="font-zen text-xl sm:text-2xl font-bold tracking-wider text-[#241E1A] leading-tight">

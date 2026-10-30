@@ -115,6 +115,7 @@ export interface OrderBankSnapshot {
   accountHolder: string;
   customQrImage?: string;
   useDynamicVietQr?: boolean;
+  momoQrImage?: string;
 }
 
 export interface BankingHistoryLog {
@@ -144,6 +145,7 @@ export interface StoreSettings {
   accountHolder: string;
   customQrImage?: string; // custom QR photo uploaded by store owner
   useDynamicVietQr?: boolean; // toggle dynamic VietQR generation
+  momoQrImage?: string; // static MoMo wallet QR shown as an alternative to bank transfer
   bankingHistory?: BankingHistoryLog[];
   shippingFlatFee: number;
   freeShippingThreshold: number;

@@ -98,7 +98,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ settings }) => {
                     className="flex gap-3.5 p-3 rounded-2xl bg-white/70 border border-[#E2D5C3] shadow-xs"
                   >
                     <img
-                      src={item.product.images[0] || '/icon.svg'}
+                      src={item.product.images[0] || '/logo-192.png'}
                       alt={item.product.name}
                       className="w-18 h-18 rounded-xl object-cover bg-[#ECE3D4] shrink-0"
                     />

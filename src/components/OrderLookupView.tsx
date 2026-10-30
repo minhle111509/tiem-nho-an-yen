@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api';
+import { MomoPaymentBlock } from './MomoPaymentBlock';
 import { Order, StoreSettings } from '../types';
 import { formatVND, formatDate, getVietQRImageUrl } from '../utils/format';
 import {
@@ -298,6 +299,7 @@ export const OrderLookupView: React.FC<OrderLookupViewProps> = ({
               : getVietQRImageUrl(bankCode, accountNumber, order.totalAmount, order.id, accountHolder);
 
             return (
+              <>
               <div className="p-4 rounded-2xl bg-white border border-[#C6A667] flex flex-col sm:flex-row items-center gap-4">
                 <img
                   src={lookupQrUrl}
@@ -313,6 +315,15 @@ export const OrderLookupView: React.FC<OrderLookupViewProps> = ({
                   <p>Nội dung chuyển khoản: <strong className="font-mono text-[#241E1A]">{order.id}</strong></p>
                 </div>
               </div>
+              {settings.momoQrImage && (
+                <MomoPaymentBlock
+                  qrImage={settings.momoQrImage}
+                  amount={order.totalAmount}
+                  orderId={order.id}
+                  className="p-4 rounded-2xl bg-white border border-[#C6A667]"
+                />
+              )}
+              </>
             );
           })()}
 

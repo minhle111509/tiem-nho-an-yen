@@ -18,6 +18,7 @@ import {
   Check,
   Sparkles,
   Info,
+  Wallet,
 } from 'lucide-react';
 
 interface AdminPaymentSettingsProps {
@@ -40,6 +41,8 @@ export const AdminPaymentSettings: React.FC<AdminPaymentSettingsProps> = ({
   const [accountHolder, setAccountHolder] = useState(settings.accountHolder || 'TIEM NHO AN YEN');
   const [customQrImage, setCustomQrImage] = useState(settings.customQrImage || '');
   const [useDynamicVietQr, setUseDynamicVietQr] = useState(settings.useDynamicVietQr !== false);
+  const [momoQrImage, setMomoQrImage] = useState(settings.momoQrImage || '');
+  const [isUploadingMomo, setIsUploadingMomo] = useState(false);
 
   // Preview tab state: 'dynamic' or 'custom'
   const [previewTab, setPreviewTab] = useState<'dynamic' | 'custom'>('dynamic');
@@ -51,6 +54,7 @@ export const AdminPaymentSettings: React.FC<AdminPaymentSettingsProps> = ({
   // File input ref for QR image upload
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const momoInputRef = useRef<HTMLInputElement>(null);
 
   // Sample order for live preview
   const demoAmount = 520000;
@@ -94,6 +98,21 @@ export const AdminPaymentSettings: React.FC<AdminPaymentSettingsProps> = ({
     }
   };
 
+  const handleMomoQrUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setErrorMessage(null);
+    setIsUploadingMomo(true);
+    try {
+      const optimized = await optimizeImageFile(files[0], 1000, 0.85);
+      setMomoQrImage(await api.uploadAdminImage(adminPin, optimized.dataUrl, optimized.fileName));
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Không thể tải ảnh mã QR MoMo');
+    } finally {
+      setIsUploadingMomo(false);
+      if (momoInputRef.current) momoInputRef.current.value = '';
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -115,8 +134,10 @@ export const AdminPaymentSettings: React.FC<AdminPaymentSettingsProps> = ({
         bankCode,
         accountNumber: accountNumber.trim().replace(/\s+/g, ''),
         accountHolder: accountHolder.trim().toUpperCase(),
-        customQrImage: customQrImage || undefined,
+        // '' (not undefined, which JSON drops) so removing an image is actually saved
+        customQrImage: customQrImage || '',
         useDynamicVietQr,
+        momoQrImage: momoQrImage || '',
       };
 
       const updated = await api.updateAdminSettings(adminPin, payload);
@@ -369,6 +390,68 @@ export const AdminPaymentSettings: React.FC<AdminPaymentSettingsProps> = ({
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Card 3: MoMo wallet QR (static, customer types amount + order code) */}
+          <div className="p-5 rounded-2xl bg-white border border-[#E2D5C3] shadow-xs space-y-4">
+            <h3 className="font-bold text-xs uppercase tracking-wider text-[#241E1A] flex items-center gap-2">
+              <Wallet className="w-4 h-4 text-[#C6A667]" />
+              <span>3. Ví MoMo (Tùy Chọn)</span>
+            </h3>
+            <p className="text-[11px] text-[#624832]/70">
+              Ảnh mã QR nhận tiền MoMo sẽ hiện bên dưới mã VietQR để khách chọn thêm cách thanh toán. Khách tự nhập số tiền và ghi mã đơn vào lời nhắn.
+            </p>
+
+            <input
+              ref={momoInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleMomoQrUpload(e.target.files)}
+            />
+
+            {momoQrImage ? (
+              <div className="p-3 rounded-xl bg-[#FAF6EE] border border-[#E2D5C3] flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <img src={momoQrImage} alt="MoMo QR" className="w-16 h-16 object-contain rounded-lg border bg-white p-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-[#241E1A]">Mã QR MoMo đang dùng</p>
+                    <button
+                      type="button"
+                      onClick={() => momoInputRef.current?.click()}
+                      disabled={isUploadingMomo}
+                      className="text-[11px] text-[#35483C] underline font-semibold"
+                    >
+                      Đổi ảnh khác
+                    </button>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMomoQrImage('')}
+                  className="text-xs text-red-600 hover:bg-red-50 px-2 py-1 rounded"
+                >
+                  Tắt MoMo
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => momoInputRef.current?.click()}
+                disabled={isUploadingMomo}
+                className="w-full py-3 px-3 rounded-xl bg-[#FAF6EE] border-2 border-dashed border-[#C6A667] text-[#35483C] hover:bg-[#F0EAE0] font-bold text-xs flex items-center justify-center gap-2 transition disabled:opacity-40 cursor-pointer"
+              >
+                <Upload className="w-4 h-4 text-[#C6A667]" />
+                <span>Tải Ảnh QR MoMo</span>
+              </button>
+            )}
+
+            {isUploadingMomo && (
+              <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-800 flex items-center gap-2">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>Đang tải ảnh mã QR MoMo...</span>
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}

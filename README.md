@@ -6,6 +6,8 @@ Web bán vật phẩm phong thủy, mặt dây chuyền và nụ trầm hương 
 thanh toán COD hoặc chuyển khoản VietQR, gói quà, tra cứu / tự hủy đơn, trang quản trị (đơn hàng, kho,
 sản phẩm, cài đặt, tài khoản nhận tiền), AI Gemini gợi ý thông tin sản phẩm từ ảnh, cài như app (PWA).
 
+**Thanh toán:** COD, chuyển khoản VietQR (tự điền số tiền + mã đơn), hoặc quét QR ví MoMo.
+
 **Công nghệ:** React 19 + Vite + Tailwind (giao diện), Express (máy chủ), dữ liệu lưu trong `data/store.json`.
 
 ## Chạy trên máy Windows
@@ -28,8 +30,9 @@ npm run build
 npm start
 ```
 
-- Lần chạy đầu tiên, web tự tạo `data/store.json` với sản phẩm mẫu và **chưa có số tài khoản ngân hàng**
-  → chỉ nhận COD cho đến khi bạn vào **Quản trị → Thanh toán** nhập tài khoản nhận tiền.
+- Lần chạy đầu tiên, web tự tạo `data/store.json` với sản phẩm mẫu, tài khoản Vietcombank
+  `0071001151943` và mã QR MoMo (`public/momo-qr.jpg`). Đổi tài khoản / tên chủ TK / ảnh MoMo trong
+  **Quản trị → Tài Khoản & Mã QR**. Nếu xóa số tài khoản, web tự chuyển sang chỉ nhận COD.
 - Hosting phải có **ổ đĩa lưu trữ lâu dài** (VPS, Render Disk, Railway Volume...) và đặt `DATA_DIR`
   trỏ vào đó; nếu không, đơn hàng sẽ mất mỗi lần deploy lại.
 - Ảnh upload nằm ở `public/uploads/` — cần sao lưu cùng `data/`.

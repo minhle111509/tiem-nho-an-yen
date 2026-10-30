@@ -90,7 +90,7 @@ export const GocAnYenView: React.FC<GocAnYenViewProps> = ({
                     className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#E2D5C3] hover:border-[#C6A667] cursor-pointer transition shadow-xs"
                   >
                     <img
-                      src={p.images[0] || '/icon.svg'}
+                      src={p.images[0] || '/logo-192.png'}
                       alt={p.name}
                       className="w-16 h-16 rounded-xl object-cover bg-[#ECE3D4] shrink-0"
                     />

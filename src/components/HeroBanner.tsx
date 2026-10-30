@@ -11,7 +11,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onExplore, homeHeroQuote
     <section className="relative overflow-hidden bg-gradient-to-b from-[#ECE4D5]/70 via-[#F5F0E6] to-[#F5F0E6] border-b border-[#E5DCB]/40 py-12 md:py-20 px-4">
       {/* Subtle Zen Watermark Background */}
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 opacity-5 pointer-events-none">
-        <img src="/icon.svg" alt="" className="w-full h-full object-contain filter grayscale" />
+        <img src="/logo-512.png" alt="" className="w-full h-full object-cover rounded-full filter grayscale" />
       </div>
 
       <div className="max-w-4xl mx-auto text-center relative z-10">

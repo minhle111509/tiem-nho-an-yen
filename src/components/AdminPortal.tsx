@@ -772,7 +772,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onLogout, adminPin, on
           {/* Product Cards List */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredProducts.map((p) => {
-              const mainImg = p.images[0] || '/icon.svg';
+              const mainImg = p.images[0] || '/logo-192.png';
               return (
                 <div
                   key={p.id}

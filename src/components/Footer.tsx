@@ -52,7 +52,7 @@ Tiệm tuyệt đối không chia sẻ, bán hay cung cấp thông tin của qu�
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-[#FAF6EE] p-1.5 flex items-center justify-center">
-                <img src="/icon.svg" alt="Tiệm Nhỏ An Yên" className="w-full h-full object-contain" />
+                <img src="/logo-192.png" alt="Tiệm Nhỏ An Yên" className="w-full h-full object-cover rounded-full" />
               </div>
               <span className="font-zen text-2xl font-bold tracking-wider text-[#FAF6EE]">
                 {settings.storeName || 'TIỆM NHỎ AN YÊN'}

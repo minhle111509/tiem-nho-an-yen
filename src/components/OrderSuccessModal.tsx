@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Order, StoreSettings } from '../types';
+import { MomoPaymentBlock } from './MomoPaymentBlock';
 import { formatVND, formatDate, getVietQRImageUrl } from '../utils/format';
 import {
   CheckCircle2,
@@ -150,6 +151,10 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                   </div>
                 </div>
               </div>
+
+              {settings.momoQrImage && (
+                <MomoPaymentBlock qrImage={settings.momoQrImage} amount={order.totalAmount} orderId={order.id} />
+              )}
 
               <div className="mt-3 pt-3 border-t border-[#E2D5C3] text-[11px] text-[#624832]/80 flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
