@@ -10,6 +10,8 @@ sản phẩm, cài đặt, tài khoản nhận tiền), AI Gemini gợi ý thôn
 
 **Công nghệ:** React 19 + Vite + Tailwind (giao diện), Express (máy chủ), dữ liệu lưu trong `data/store.json`.
 
+📖 **Hướng dẫn đăng / sửa sản phẩm, xử lý đơn, đổi PIN:** xem [HUONG_DAN_QUAN_LY.md](HUONG_DAN_QUAN_LY.md)
+
 ## Chạy trên máy Windows
 
 1. Cài **Node.js 22 LTS** tại https://nodejs.org. Mở PowerShell, kiểm tra: `node -v` (phải ra v22.x).
@@ -41,7 +43,8 @@ npm start
 
 - **Không bao giờ** đưa file `.env` và thư mục `data/` lên GitHub (đã có sẵn trong `.gitignore`).
   `data/store.json` chứa tên, SĐT khách hàng và mã PIN.
-- PIN mặc định khi chưa cấu hình là `123456` — **phải đổi** (đặt `ADMIN_PIN` hoặc đổi trong Quản trị → Cài đặt).
+- PIN mặc định là `123456`. Đổi bất cứ lúc nào trong **Quản trị → Cài Đặt Tiệm → Mã PIN Quản Trị Mới** (6 chữ số).
+  Chỉ đặt biến `ADMIN_PIN` nếu muốn khóa PIN ở hosting (khi đó không đổi trong web được).
 - Nhập sai PIN 10 lần sẽ bị khóa 15 phút.
 - Nếu lỡ để lộ `GEMINI_API_KEY`, vào Google AI Studio xóa key cũ và tạo key mới.
 
