@@ -207,7 +207,7 @@ export const INITIAL_SETTINGS: StoreSettings = {
   bankName: 'Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)',
   bankCode: 'VCB',
   accountNumber: '0071001151943',
-  accountHolder: 'TIEM NHO AN YEN',
+  accountHolder: 'NGUYEN THI KIM NGAN',
   useDynamicVietQr: true,
   momoQrImage: '/momo-qr.jpg',
   shippingFlatFee: 30000,
