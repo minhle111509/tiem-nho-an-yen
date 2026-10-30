@@ -12,7 +12,7 @@ Mọi thao tác quản lý làm ngay trên web, bằng điện thoại hoặc m�
 | Mã nguồn | GitHub `minhle111509/tiem-nho-an-yen` (nhánh `main`) |
 | Dữ liệu (sản phẩm, đơn, cài đặt, ảnh) | Lưu trên Cloudflare — **không** nằm trên GitHub |
 | Nhận tiền | Vietcombank `0071001151943` – NGUYEN THI KIM NGAN · ví MoMo (mã QR) |
-| Trang liên kết | minhle111509.github.io/innercode-giai-doan-1-v2/ (Inner Code giai đoạn 1 v2) |
+| Trang liên kết | innercode-version-2.pages.dev (INNER CODE, repo `innercode-version-2`) |
 
 ## 1. Lịch làm việc gợi ý
 

@@ -5,7 +5,7 @@ Web bán vật phẩm phong thủy, mặt dây chuyền và nụ trầm hương 
 🌐 **Web:** https://tiem-nho-an-yen.minhle111509.workers.dev
 
 🔗 **Trang liên kết qua lại (duy nhất)** (chân trang Tiệm ↔ menu + chân trang bên kia; đổi địa chỉ thì sửa cả hai phía, xem `PARTNER_SITES` trong `src/components/Footer.tsx`):
-- innercode-giai-doan-1-v2 và Tiệm Nhỏ An Yên: https://minhle111509.github.io/innercode-giai-doan-1-v2/ (repo `minhle111509/innercode-giai-doan-1-v2`)
+- innercode-version-2 và Tiệm Nhỏ An Yên: https://innercode-version-2.pages.dev (repo `minhle111509/innercode-version-2`, Cloudflare Pages; trước đây tên `innercode-giai-doan-1-v2`)
 - (innercode-v2 đã bỏ liên kết từ 30/10/2026 theo yêu cầu chủ web.)
 
 **Tính năng:** danh mục & tìm kiếm sản phẩm (gõ không dấu được), giỏ hàng, đặt hàng không cần tài khoản,
