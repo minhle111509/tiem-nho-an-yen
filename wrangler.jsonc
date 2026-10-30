@@ -1,0 +1,22 @@
+{
+  // Cloudflare Workers config. The Worker name must match the project name in the dashboard.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tiem-nho-an-yen",
+  "main": "cloudflare/worker.ts",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/uploads/*"]
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "STORE", "class_name": "ShopStore" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ShopStore"] }],
+  "observability": { "enabled": true }
+  // Secrets (set in dashboard > Settings > Variables and Secrets, never in this file):
+  //   GEMINI_API_KEY  - Google Gemini key for "AI gợi ý"
+  //   ADMIN_PIN       - optional; overrides the PIN saved in admin settings
+}

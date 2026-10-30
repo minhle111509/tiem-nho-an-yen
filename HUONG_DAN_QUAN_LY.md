@@ -83,16 +83,22 @@ Thẻ **Đơn Hàng** — đơn mới nằm ở trạng thái **Chờ xác nhậ
 
 ## 6. Sao lưu — rất quan trọng
 
-Toàn bộ sản phẩm, đơn hàng, cài đặt nằm trong `data/store.json`; ảnh bạn chụp tải lên nằm trong `public/uploads/`.
-**Mỗi tuần tải 2 thư mục này về máy** (hoặc nhờ người quản lý hosting làm).
-Mất 2 thư mục này là mất sản phẩm và đơn hàng — GitHub **không** lưu chúng.
+Toàn bộ sản phẩm, đơn hàng, cài đặt nằm trên Cloudflare. GitHub **không** lưu chúng.
+
+- **Sao lưu (mỗi tuần):** Quản trị → **Cài Đặt Tiệm** → kéo xuống **Sao Lưu & Khôi Phục Dữ Liệu** →
+  **TẢI BẢN SAO LƯU**. Máy tải về file `tiem-nho-an-yen-backup-<ngày>.json` — cất vào Google Drive / máy tính.
+  File có SĐT khách và mã PIN: **không gửi cho ai, không đưa lên GitHub**.
+- **Khôi phục:** cùng chỗ đó → **KHÔI PHỤC TỪ FILE...** → chọn file sao lưu → xác nhận.
+  Việc này **thay thế toàn bộ** dữ liệu hiện tại, nên hãy tải bản sao lưu mới nhất trước.
+- Ảnh sản phẩm bạn chụp tải lên được lưu trên Cloudflare, file sao lưu chỉ chứa đường dẫn ảnh
+  (không chứa ảnh). Nên giữ lại ảnh gốc trong điện thoại.
 
 ## Gặp lỗi thường gặp
 
 | Hiện tượng | Cách xử lý |
 | --- | --- |
 | Báo "Mã PIN quản trị không chính xác" khi đang dùng | PIN vừa bị đổi ở máy khác → Thoát, đăng nhập lại bằng PIN mới |
-| Không tải được ảnh | Chỉ nhận JPG, PNG, WEBP, tối đa 5MB/ảnh (ảnh điện thoại thường tự nén đủ nhỏ) |
-| AI gợi ý ra nội dung chung chung | Hosting chưa có `GEMINI_API_KEY` hoặc key hết hạn → kiểm tra lại key |
+| Không tải được ảnh | Chỉ nhận JPG, PNG, WEBP, tối đa 2MB/ảnh trên Cloudflare (web tự nén ảnh điện thoại, thường chỉ vài trăm KB) |
+| AI gợi ý ra nội dung chung chung | Chưa thêm Secret `GEMINI_API_KEY` trên Cloudflare hoặc key hết hạn → kiểm tra lại |
 | Giá hiện sai | Gõ số liền, không dấu chấm/phẩy: `1250000` |
 | Khách báo không đặt được vì hết hàng | Sửa → tăng tồn kho |

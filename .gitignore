@@ -11,3 +11,7 @@ coverage/
 data/
 public/uploads/*
 !public/uploads/.gitkeep
+
+# Cloudflare local dev state and secrets
+.wrangler/
+.dev.vars*

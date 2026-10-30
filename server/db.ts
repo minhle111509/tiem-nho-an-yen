@@ -1,6 +1,4 @@
-import fs from 'fs';
-import crypto from 'crypto';
-import path from 'path';
+import crypto from 'node:crypto';
 import { Product, StoreSettings, Article, Category, Order, OrderStatus, PaymentStatus, BankingHistoryLog } from '../src/types';
 import { INITIAL_CATEGORIES, INITIAL_PRODUCTS, INITIAL_SETTINGS, INITIAL_ARTICLES } from './initialData';
 import { normalizePhone, isValidVietnamesePhone } from '../src/utils/format';
@@ -16,7 +14,7 @@ export const isPaymentStatus = (v: unknown): v is PaymentStatus => PAYMENT_STATU
 // Trim and cap free-text input from customers
 const cleanText = (v: unknown, max: number): string => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
-interface StoreData {
+export interface StoreData {
   categories: Category[];
   products: Product[];
   settings: StoreSettings;
@@ -24,9 +22,27 @@ interface StoreData {
   orders: Order[];
 }
 
-// DATA_DIR lets hosting mount a persistent disk (and tests use a temp folder)
-const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(process.cwd(), 'data'));
-const DATA_FILE = path.join(DATA_DIR, 'store.json');
+// What a write touched, so storage backends can persist only the changed rows
+export interface StoreChange {
+  all?: boolean;
+  products?: string[];
+  deletedProducts?: string[];
+  orders?: string[];
+  settings?: boolean;
+  articles?: boolean;
+}
+
+// Persistence backend: a JSON file on Node, SQLite inside a Cloudflare Durable Object.
+// Both are synchronous so business logic never interleaves between check and write.
+export interface StorageAdapter {
+  load(): StoreData | null;
+  save(data: StoreData, change: StoreChange): void;
+}
+
+export interface DatabaseOptions {
+  adminPin?: string;
+  includeSampleOrder?: boolean;
+}
 
 // Initialize sample order for immediate testing
 const INITIAL_ORDERS: Order[] = [
@@ -96,51 +112,58 @@ const INITIAL_ORDERS: Order[] = [
   },
 ];
 
-class Database {
+export class Database {
   private data: StoreData;
 
-  constructor() {
-    this.data = this.loadData();
-  }
-
-  private loadData(): StoreData {
-    try {
-      if (!fs.existsSync(DATA_DIR)) {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
-      }
-      if (fs.existsSync(DATA_FILE)) {
-        const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-        return JSON.parse(raw);
-      }
-    } catch (err) {
-      console.error('Error loading data file, falling back to initial data:', err);
+  constructor(private storage: StorageAdapter, options: DatabaseOptions = {}) {
+    const loaded = storage.load();
+    if (loaded) {
+      this.data = loaded;
+    } else {
+      // Fresh install: seed demo catalog (deep-copied so seeds are never mutated)
+      this.data = structuredClone({
+        categories: INITIAL_CATEGORIES,
+        products: INITIAL_PRODUCTS,
+        settings: { ...INITIAL_SETTINGS, adminPin: options.adminPin || INITIAL_SETTINGS.adminPin },
+        articles: INITIAL_ARTICLES,
+        orders: options.includeSampleOrder ? INITIAL_ORDERS : [],
+      });
+      this.saveData({ all: true });
     }
-
-    // Fresh install: seed demo catalog; the sample order is only added outside production
-    const defaultData: StoreData = {
-      categories: INITIAL_CATEGORIES,
-      products: INITIAL_PRODUCTS,
-      settings: { ...INITIAL_SETTINGS, adminPin: process.env.ADMIN_PIN?.trim() || INITIAL_SETTINGS.adminPin },
-      articles: INITIAL_ARTICLES,
-      orders: process.env.NODE_ENV === 'production' ? [] : INITIAL_ORDERS,
-    };
-    this.saveData(defaultData);
-    return defaultData;
   }
 
-  private saveData(dataToSave: StoreData = this.data) {
+  private saveData(change: StoreChange) {
     try {
-      if (!fs.existsSync(DATA_DIR)) {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
-      }
-      // Write to a temp file then rename, so a crash mid-write never leaves a truncated store.json
-      const tmpFile = `${DATA_FILE}.tmp`;
-      fs.writeFileSync(tmpFile, JSON.stringify(dataToSave, null, 2), 'utf-8');
-      fs.renameSync(tmpFile, DATA_FILE);
+      this.storage.save(this.data, change);
     } catch (err) {
-      console.error('Failed to save data to file:', err);
+      console.error('Failed to save data:', err);
       throw new Error('Không thể lưu dữ liệu, vui lòng thử lại.');
     }
+  }
+
+  // --- BACKUP / RESTORE ---
+  exportData(): StoreData {
+    return this.data;
+  }
+
+  importData(data: StoreData): void {
+    const ok =
+      data &&
+      Array.isArray(data.products) &&
+      Array.isArray(data.orders) &&
+      Array.isArray(data.categories) &&
+      Array.isArray(data.articles) &&
+      data.settings &&
+      typeof data.settings === 'object';
+    if (!ok) throw new Error('File sao lưu không đúng định dạng.');
+    this.data = {
+      categories: data.categories,
+      products: data.products,
+      settings: data.settings,
+      articles: data.articles,
+      orders: data.orders,
+    };
+    this.saveData({ all: true });
   }
 
   // --- PRODUCTS ---
@@ -178,7 +201,7 @@ class Database {
       rating: 5.0,
     };
     this.data.products.unshift(newProduct);
-    this.saveData();
+    this.saveData({ products: [newId] });
     return newProduct;
   }
 
@@ -191,7 +214,7 @@ class Database {
     }
     if (safeUpdates.stock !== undefined) safeUpdates.stock = Math.max(0, Math.floor(Number(safeUpdates.stock) || 0));
     this.data.products[index] = { ...this.data.products[index], ...safeUpdates };
-    this.saveData();
+    this.saveData({ products: [id] });
     return this.data.products[index];
   }
 
@@ -199,7 +222,7 @@ class Database {
     const prevLen = this.data.products.length;
     this.data.products = this.data.products.filter((p) => p.id !== id);
     if (this.data.products.length !== prevLen) {
-      this.saveData();
+      this.saveData({ deletedProducts: [id] });
       return true;
     }
     return false;
@@ -221,7 +244,7 @@ class Database {
       stock: original.stock > 0 ? original.stock : 10,
     };
     this.data.products.unshift(duplicated);
-    this.saveData();
+    this.saveData({ products: [newId] });
     return duplicated;
   }
 
@@ -229,7 +252,7 @@ class Database {
     const product = this.getProductById(id);
     if (!product) return null;
     product.isActive = !product.isActive;
-    this.saveData();
+    this.saveData({ products: [id] });
     return product;
   }
 
@@ -283,7 +306,7 @@ class Database {
     }
 
     this.data.settings = { ...this.data.settings, ...updates };
-    this.saveData();
+    this.saveData({ settings: true });
     return this.data.settings;
   }
 
@@ -299,7 +322,7 @@ class Database {
       publishedAt: new Date().toISOString().split('T')[0],
     };
     this.data.articles.unshift(newArticle);
-    this.saveData();
+    this.saveData({ articles: true });
     return newArticle;
   }
 
@@ -499,7 +522,7 @@ class Database {
     };
 
     this.data.orders.unshift(newOrder);
-    this.saveData();
+    this.saveData({ orders: [newOrderId], products: [...qtyByProduct.keys()] });
 
     return { success: true, order: newOrder };
   }
@@ -565,7 +588,7 @@ class Database {
       note: note || undefined,
     });
 
-    this.saveData();
+    this.saveData({ orders: [orderId], products: order.items.map((i) => i.productId) });
     return order;
   }
 
@@ -587,7 +610,7 @@ class Database {
       note,
     });
 
-    this.saveData();
+    this.saveData({ orders: [orderId] });
     return order;
   }
 
@@ -595,7 +618,7 @@ class Database {
     const order = this.getOrderById(orderId);
     if (!order) return null;
     order.internalNote = internalNote;
-    this.saveData();
+    this.saveData({ orders: [orderId] });
     return order;
   }
 
@@ -643,4 +666,3 @@ class Database {
   }
 }
 
-export const db = new Database();

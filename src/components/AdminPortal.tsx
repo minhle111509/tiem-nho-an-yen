@@ -27,6 +27,8 @@ import {
   Layers,
   QrCode,
   ArrowRight,
+  Download,
+  Upload,
 } from 'lucide-react';
 
 interface AdminPortalProps {
@@ -205,6 +207,42 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onLogout, adminPin, on
       setTimeout(() => setSaveSettingsSuccess(false), 3000);
     } catch (err: any) {
       alert(err.message || 'Lỗi lưu cài đặt');
+    }
+  };
+
+  const handleDownloadBackup = async () => {
+    try {
+      const data = await api.exportAdminData(adminPin);
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tiem-nho-an-yen-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      alert(err.message || 'Lỗi tải bản sao lưu');
+    }
+  };
+
+  const handleRestoreBackup = async (file?: File) => {
+    if (!file) return;
+    let data: unknown;
+    try {
+      data = JSON.parse(await file.text());
+    } catch {
+      alert('File không đúng định dạng sao lưu (.json).');
+      return;
+    }
+    if (!window.confirm('Thay thế TOÀN BỘ sản phẩm, đơn hàng và cài đặt hiện tại bằng dữ liệu trong file này? Không thể hoàn tác.')) return;
+    try {
+      const result = await api.importAdminData(adminPin, data);
+      alert(`Đã khôi phục: ${result.products} sản phẩm, ${result.orders} đơn hàng. Vui lòng đăng nhập lại.`);
+      // The restored file may carry a different PIN
+      onLogout();
+      window.location.reload();
+    } catch (err: any) {
+      alert(err.message || 'Lỗi khôi phục dữ liệu');
     }
   };
 
@@ -905,6 +943,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onLogout, adminPin, on
 
       {/* --- TAB 4: STORE SETTINGS & VIETQR --- */}
       {activeTab === 'settings' && settingsForm && (
+        <>
         <form onSubmit={handleSaveSettings} className="p-6 rounded-3xl bg-[#FAF6EE] border border-[#E2D5C3] shadow-sm space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-[#E2D5C3]">
             <div>
@@ -1097,6 +1136,43 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onLogout, adminPin, on
             LƯU TẤT CẢ CÀI ĐẶT
           </button>
         </form>
+
+        {/* Backup & restore: the only way to get data out of / into the hosting */}
+        <div className="mt-6 p-6 rounded-3xl bg-[#FAF6EE] border border-[#E2D5C3] shadow-sm space-y-4">
+          <div>
+            <h3 className="font-zen text-lg font-bold text-[#241E1A]">Sao Lưu & Khôi Phục Dữ Liệu</h3>
+            <p className="text-xs text-[#624832]/80 mt-1">
+              Nên tải bản sao lưu mỗi tuần. File chứa toàn bộ sản phẩm, đơn hàng, cài đặt (có SĐT khách và mã PIN — giữ kín).
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              onClick={handleDownloadBackup}
+              className="px-5 py-3 rounded-xl bg-[#35483C] text-[#F5F0E6] text-xs font-bold hover:bg-[#28382E] transition shadow-md cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4 text-[#C6A667]" />
+              TẢI BẢN SAO LƯU
+            </button>
+            <label className="px-5 py-3 rounded-xl bg-white border border-red-300 text-red-700 text-xs font-bold hover:bg-red-50 transition cursor-pointer flex items-center justify-center gap-2">
+              <Upload className="w-4 h-4" />
+              KHÔI PHỤC TỪ FILE...
+              <input
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={(e) => {
+                  handleRestoreBackup(e.target.files?.[0]);
+                  e.target.value = '';
+                }}
+              />
+            </label>
+          </div>
+          <p className="text-[11px] text-red-700/80">
+            Khôi phục sẽ thay thế TOÀN BỘ dữ liệu hiện tại bằng dữ liệu trong file. Hãy tải bản sao lưu trước khi khôi phục.
+          </p>
+        </div>
+        </>
       )}
 
       {/* --- TAB 5: PAYMENT & QR SETTINGS --- */}

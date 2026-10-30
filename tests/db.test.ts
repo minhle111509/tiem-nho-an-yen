@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { Database } from '../server/db';
+import { FileStorage } from '../server/fileStorage';
 
 // Isolated data folder so tests never touch the real store.json
-process.env.DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'tiem-test-'));
-process.env.NODE_ENV = 'production'; // seed without the sample order
+const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'tiem-test-'));
 
-type Db = typeof import('../server/db').db;
-let db: Db;
+let db: Database;
 let productId: string;
 
 const baseOrder = () => ({
@@ -23,7 +23,7 @@ const baseOrder = () => ({
 });
 
 before(async () => {
-  ({ db } = await import('../server/db'));
+  db = new Database(new FileStorage(dataDir));
   const p = db.getProducts().find((x) => x.isActive && x.stock >= 5 && !x.variations?.length)!;
   productId = p.id;
 });
@@ -107,7 +107,10 @@ test('product update cannot change the product id', () => {
   assert.equal(updated.name, 'Tên mới');
 });
 
-test('data is persisted to store.json', () => {
-  const saved = JSON.parse(fs.readFileSync(path.join(process.env.DATA_DIR!, 'store.json'), 'utf-8'));
+test('data is persisted to store.json and survives a reload', () => {
+  const saved = JSON.parse(fs.readFileSync(path.join(dataDir, 'store.json'), 'utf-8'));
   assert.ok(saved.orders.length >= 3);
+  const reloaded = new Database(new FileStorage(dataDir));
+  assert.equal(reloaded.getOrders().length, db.getOrders().length);
+  assert.equal(reloaded.getProductById(productId)!.stock, db.getProductById(productId)!.stock);
 });

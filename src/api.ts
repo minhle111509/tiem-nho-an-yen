@@ -263,6 +263,24 @@ export const api = {
     return data.settings as StoreSettings;
   },
 
+  async exportAdminData(pin: string) {
+    const res = await fetch('/api/admin/export', { headers: { 'x-admin-pin': pin } });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Lỗi tải bản sao lưu');
+    return data;
+  },
+
+  async importAdminData(pin: string, data: unknown) {
+    const res = await fetch('/api/admin/import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-pin': pin },
+      body: JSON.stringify({ data, confirm: 'REPLACE_ALL_DATA' }),
+    });
+    const result = await res.json();
+    if (!res.ok || !result.success) throw new Error(result.error || 'Lỗi khôi phục dữ liệu');
+    return result as { products: number; orders: number };
+  },
+
   async updateAdminSettings(pin: string, settings: Partial<StoreSettings>) {
     const res = await fetch('/api/admin/settings', {
       method: 'PUT',
