@@ -22,7 +22,7 @@ hoặc Express/Node với dữ liệu trong `data/store.json`. Cả hai dùng ch
    ```
 3. Tạo file cấu hình: `copy .env.example .env` rồi mở `.env` bằng Notepad, điền:
    - `GEMINI_API_KEY` — lấy miễn phí tại https://aistudio.google.com/apikey (không bắt buộc).
-   - `ADMIN_PIN` — mã PIN quản trị 6 số của bạn.
+   - Mã PIN quản trị mặc định là `123456`, đổi trong trang quản trị (không cần sửa file).
 4. Chạy thử: `npm run dev` → mở http://localhost:3000
 
 ## Chạy bằng máy chủ Node (tùy chọn, thay cho Cloudflare)
